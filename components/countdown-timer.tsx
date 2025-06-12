@@ -10,30 +10,37 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAppState } from "@/components/state-provider";
 import { Input } from "@/components/ui/input"
 import { Play, Pause, RotateCcw, Ban } from "lucide-react"
 
 export default function CountdownTimer() {
-    const [totalSeconds, setTotalSeconds] = useState(3600)
-    const [isRunning, setIsRunning] = useState(false)
     const [initialTime] = useState(3600)
+    const [showConfirmReset, setShowConfirmReset] = useState(false);
     const [customMinutes, setCustomMinutes] = useState("")
+    const {
+        secureReset,
+        totalSeconds,
+        setTotalSeconds,
+        isRunning,
+        setIsRunning,
+    } = useAppState();
+
 
     useEffect(() => {
         let interval: NodeJS.Timeout | null = null
         if (isRunning) {
             interval = setInterval(() => {
-                setTotalSeconds((seconds) => seconds - 1)
+                setTotalSeconds(totalSeconds - 1)
             }, 1000)
         }
         return () => {
             if (interval) clearInterval(interval)
         }
-    }, [isRunning])
+    }, [isRunning, setTotalSeconds, totalSeconds])
 
     const formatTime = (seconds: number) => {
         const sign = seconds < 0 ? "-" : ""
@@ -54,7 +61,7 @@ export default function CountdownTimer() {
     }
 
     const adjustTime = (minutes: number) => {
-        setTotalSeconds((prev) => prev + minutes * 60)
+        setTotalSeconds(totalSeconds + minutes * 60)
     }
 
     const handleCustomTime = () => {
@@ -69,8 +76,8 @@ export default function CountdownTimer() {
         totalSeconds <= 0
             ? "text-red-500"
             : totalSeconds <= 300
-            ? "text-orange-500"
-            : "text-foreground"
+                ? "text-orange-500"
+                : "text-foreground"
 
     return (
         <Card className="h-full">
@@ -96,12 +103,21 @@ export default function CountdownTimer() {
                     )}
 
                     {/* AlertDialog for Reset */}
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button variant="outline" className="cursor-pointer flex items-center gap-2">
-                                <RotateCcw className="h-4 w-4" /> Reset
-                            </Button>
-                        </AlertDialogTrigger>
+                    <Button
+                        variant="outline"
+                        className="cursor-pointer flex items-center gap-2"
+                        onClick={() => {
+                            if (secureReset) {
+                                setShowConfirmReset(true);
+                            } else {
+                                handleReset();
+                            }
+                        }}
+                    >
+                        <RotateCcw className="h-4 w-4" /> Reset
+                    </Button>
+
+                    <AlertDialog open={showConfirmReset} onOpenChange={setShowConfirmReset}>
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Reset the timer?</AlertDialogTitle>
@@ -110,13 +126,19 @@ export default function CountdownTimer() {
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={handleReset}>
+                                <AlertDialogCancel onClick={() => setShowConfirmReset(false)}>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                    onClick={() => {
+                                        handleReset();
+                                        setShowConfirmReset(false);
+                                    }}
+                                >
                                     Yes, reset
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
+
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">

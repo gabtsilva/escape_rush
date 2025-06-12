@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Lightbulb, LightbulbOff } from "lucide-react"
+import { Lightbulb, LightbulbOff, Skull } from "lucide-react"
 
 export default function NotificationManager() {
     const [askedForClue, setAskedForClue] = useState<boolean>(false)
@@ -28,7 +28,7 @@ export default function NotificationManager() {
                 {/* Developer Buttons */}
                 <div className="w-full">
                     <Button className="cursor-pointer w-full" variant="default">
-                        Trigger Hacking video
+                        <Skull />Hacking video
                     </Button>
                 </div>
                 <div className="flex justify-center gap-4">
