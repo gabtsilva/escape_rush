@@ -25,12 +25,11 @@ type Language = keyof typeof cluesData
 const LANGUAGES: Language[] = ["en", "fr", "nl"]
 
 export default function ClueManager() {
-    const { clueHistory } = useAppState()
+    const { clueHistory, history, setHistory } = useAppState()
     const [language, setLanguage] = useState<Language>("en")
     const [clues, setClues] = useState<string[]>([])
     const [selectedClue, setSelectedClue] = useState("")
     const [liveClue, setLiveClue] = useState("")
-    const [history, setHistory] = useState<string[]>([])
 
     useEffect(() => {
         const langClues = cluesData[language] || []
@@ -39,14 +38,19 @@ export default function ClueManager() {
     }, [language])
 
     const handleSend = () => {
-        const trimmed = selectedClue.trim()
+        const trimmed = selectedClue.trim();
         if (trimmed) {
-            setLiveClue(trimmed)
-            setHistory(prev => [trimmed, ...prev.slice(0, 2)])
-            setSelectedClue("")
-            console.log(`Sent clue in ${language}:`, trimmed)
+            setLiveClue(trimmed);
+            const newEntry = {
+                message: trimmed,
+                timestamp: new Date().toLocaleString(), // you can customize format
+            };
+            setHistory([newEntry, ...history.slice(0, 5)]); // Keep last 6
+            setSelectedClue("");
+            console.log(`Sent clue in ${language}:`, trimmed);
         }
-    }
+    };
+
 
     const handleClear = () => {
         setLiveClue("")
@@ -75,12 +79,12 @@ export default function ClueManager() {
                     <CardTitle>{clueHistory && <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="ghost" className="cursor-pointer">
-                                <History/>
+                                <History />
                             </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>History of clues</AlertDialogTitle>
+                                <AlertDialogTitle className="mb-4">History of clues</AlertDialogTitle>
                                 <AlertDialogDescription>
                                     {history.length === 0 ? (
                                         <div className="border-dashed min-h-[100px] border-2 rounded-md p-4 text-center text-muted-foreground bg-muted flex flex-col items-center justify-center gap-2">
@@ -88,13 +92,29 @@ export default function ClueManager() {
                                             No clues sent yet
                                         </div>
                                     ) : (
-                                        <ul className="space-y-1 text-sm list-disc list-inside text-muted-foreground">
-                                            {history.map((item, idx) => (
-                                                <li key={idx} className="text-foreground color-gray-300 font-medium">{item}</li>
-                                            ))}
-                                        </ul>
-                                    )}
+                                        <div className="space-y-4 overflow-y-auto max-h-[400px] relative">
+                                            {history.map((item, idx) => {
+                                                // Calculate opacity based on position (0 = newest, higher = older)
+                                                const opacity = Math.max(0.2, 1 - (idx * 0.15));
 
+                                                return (
+                                                    <div
+                                                        key={idx}
+                                                        className="border rounded-lg p-4 bg-secondary text-foreground shadow-sm transition-all duration-300 ease-in-out"
+                                                        style={{
+                                                            opacity: opacity
+                                                        }}
+                                                    >
+                                                        <p className="font-semibold">{item.message}</p>
+                                                        <p className="text-xs text-muted-foreground mt-1">{item.timestamp}</p>
+                                                    </div>
+                                                );
+                                            })}
+
+                                            {/* Optional: Add a subtle gradient overlay at the bottom */}
+                                            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background/50 to-transparent pointer-events-none" />
+                                        </div>
+                                    )}
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>

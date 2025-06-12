@@ -7,6 +7,8 @@ type StateContextType = {
     setSecureReset: (value: boolean) => void;
     clueHistory: boolean;
     setClueHistory: (value: boolean) => void;
+    history: ClueHistoryItem[];
+    setHistory: (value: ClueHistoryItem[]) => void;
 
     totalSeconds: number;
     setTotalSeconds: (value: number) => void;
@@ -14,11 +16,17 @@ type StateContextType = {
     setIsRunning: (value: boolean) => void;
 };
 
+type ClueHistoryItem = {
+    message: string;
+    timestamp: string;
+};
+
 const StateContext = createContext<StateContextType | undefined>(undefined);
 
 export const StateProvider = ({ children }: { children: React.ReactNode }) => {
     const [secureReset, setSecureReset] = useState(true);
     const [clueHistory, setClueHistory] = useState(false);
+    const [history, setHistory] = useState<ClueHistoryItem[]>([])
     const [totalSeconds, setTotalSeconds] = useState(3600);
     const [isRunning, setIsRunning] = useState(false);
 
@@ -29,6 +37,8 @@ export const StateProvider = ({ children }: { children: React.ReactNode }) => {
                 setSecureReset,
                 clueHistory,
                 setClueHistory,
+                history,
+                setHistory,
                 totalSeconds,
                 setTotalSeconds,
                 isRunning,
