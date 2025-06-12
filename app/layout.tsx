@@ -21,7 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script defer src="https://cloud.umami.is/script.js" data-website-id="ec5a3a13-755d-4626-a52d-24cf69bae2e8"></Script>
+        <Script
+          src="/umami.js"
+          data-website-id="ec5a3a13-755d-4626-a52d-24cf69bae2e8"
+          strategy="afterInteractive"
+        />
       </head>
       <body className={`px-4 py-6 sm:px-6 lg:px-8 ${montserrat.className} antialiased`}>
         <ThemeProvider
