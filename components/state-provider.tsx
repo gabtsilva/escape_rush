@@ -3,42 +3,47 @@
 import React, { createContext, useContext, useState } from "react";
 
 type StateContextType = {
-  secureReset: boolean;
-  setSecureReset: (value: boolean) => void;
+    secureReset: boolean;
+    setSecureReset: (value: boolean) => void;
+    clueHistory: boolean;
+    setClueHistory: (value: boolean) => void;
 
-  totalSeconds: number;
-  setTotalSeconds: (value: number) => void;
-  isRunning: boolean;
-  setIsRunning: (value: boolean) => void;
+    totalSeconds: number;
+    setTotalSeconds: (value: number) => void;
+    isRunning: boolean;
+    setIsRunning: (value: boolean) => void;
 };
 
 const StateContext = createContext<StateContextType | undefined>(undefined);
 
 export const StateProvider = ({ children }: { children: React.ReactNode }) => {
-  const [secureReset, setSecureReset] = useState(true);
-  const [totalSeconds, setTotalSeconds] = useState(3600);
-  const [isRunning, setIsRunning] = useState(false);
+    const [secureReset, setSecureReset] = useState(true);
+    const [clueHistory, setClueHistory] = useState(false);
+    const [totalSeconds, setTotalSeconds] = useState(3600);
+    const [isRunning, setIsRunning] = useState(false);
 
-  return (
-    <StateContext.Provider
-      value={{
-        secureReset,
-        setSecureReset,
-        totalSeconds,
-        setTotalSeconds,
-        isRunning,
-        setIsRunning,
-      }}
-    >
-      {children}
-    </StateContext.Provider>
-  );
+    return (
+        <StateContext.Provider
+            value={{
+                secureReset,
+                setSecureReset,
+                clueHistory,
+                setClueHistory,
+                totalSeconds,
+                setTotalSeconds,
+                isRunning,
+                setIsRunning,
+            }}
+        >
+            {children}
+        </StateContext.Provider>
+    );
 };
 
 export const useAppState = () => {
-  const context = useContext(StateContext);
-  if (!context) {
-    throw new Error("useAppState must be used within a StateProvider");
-  }
-  return context;
+    const context = useContext(StateContext);
+    if (!context) {
+        throw new Error("useAppState must be used within a StateProvider");
+    }
+    return context;
 };

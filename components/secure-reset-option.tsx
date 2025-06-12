@@ -3,24 +3,29 @@
 import * as React from "react"
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { useAppState } from "@/components/state-provider";
 
-export function SecureResetOption() {
-    const { secureReset, setSecureReset } = useAppState();
+type SettingsToggleOptionProps = {
+    title: string;
+    description: string;
+    currentValue: boolean;
+    setCurrentValue: (val: boolean) => void;
+}
+
+export function SettingsToggleOption({ title, description, currentValue, setCurrentValue }: SettingsToggleOptionProps) {
 
     return (
         <div className="flex items-center space-x-4">
             <Switch
-                id="secure-timer-reset"
-                checked={secureReset}
-                onCheckedChange={setSecureReset}
+                className="cursor-pointer"
+                checked={currentValue}
+                onCheckedChange={setCurrentValue}
             />
             <div>
-                <Label htmlFor="secure-timer-reset" className="text-base font-medium">
-                    Secure Timer Reset
+                <Label className="text-base font-medium">
+                    {title}
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                    Turn this on/off to enable/disable confirmation before complete timer reset.
+                    {description}
                 </p>
             </div>
         </div>)

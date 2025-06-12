@@ -6,14 +6,26 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { MessageSquareOff, History } from "lucide-react"
+import { MessageSquareOff, History, Sticker } from "lucide-react"
 import cluesData from "@/data/clues.json"
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { useAppState } from "./state-provider"
 
 type Language = keyof typeof cluesData
 
 const LANGUAGES: Language[] = ["en", "fr", "nl"]
 
 export default function ClueManager() {
+    const { clueHistory } = useAppState()
     const [language, setLanguage] = useState<Language>("en")
     const [clues, setClues] = useState<string[]>([])
     const [selectedClue, setSelectedClue] = useState("")
@@ -48,7 +60,6 @@ export default function ClueManager() {
         <Card className="w-full">
             <CardHeader>
                 <div className="flex items-center justify-between">
-                    <CardTitle>CLUES MANAGER</CardTitle>
                     <div className="flex gap-2 mt-4">
                         {LANGUAGES.map((lang) => (
                             <Button
@@ -61,6 +72,36 @@ export default function ClueManager() {
                             </Button>
                         ))}
                     </div>
+                    <CardTitle>{clueHistory && <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="ghost" className="cursor-pointer">
+                                <History/>
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>History of clues</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    {history.length === 0 ? (
+                                        <div className="border-dashed min-h-[100px] border-2 rounded-md p-4 text-center text-muted-foreground bg-muted flex flex-col items-center justify-center gap-2">
+                                            <Sticker className="h-15 w-15" />
+                                            No clues sent yet
+                                        </div>
+                                    ) : (
+                                        <ul className="space-y-1 text-sm list-disc list-inside text-muted-foreground">
+                                            {history.map((item, idx) => (
+                                                <li key={idx} className="text-foreground color-gray-300 font-medium">{item}</li>
+                                            ))}
+                                        </ul>
+                                    )}
+
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Close</AlertDialogCancel>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>}</CardTitle>
                 </div>
 
             </CardHeader>
@@ -106,21 +147,6 @@ export default function ClueManager() {
                     )}
                 </div>
 
-
-                <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
-                        <History className="w-4 h-4" />
-                        History - Last 3 clues sent
-                    </Label>
-                    <div className={`min-h-[50px] border ${history.length > 0 ? "rounded-md p-2" : "bg-muted rounded-md p-2"}`}>
-                        <ul className="space-y-1 text-sm list-disc list-inside text-muted-foreground">
-                            {history.map((item, idx) => (
-                                <li key={idx} className="text-foreground color-gray-300 font-medium">{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-
             </CardContent>
 
             <CardFooter className="flex gap-4">
@@ -131,6 +157,6 @@ export default function ClueManager() {
                     Clear live message
                 </Button>
             </CardFooter>
-        </Card>
+        </Card >
     )
 }
