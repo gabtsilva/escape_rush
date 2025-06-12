@@ -31,6 +31,7 @@ export default function ClueManager() {
         if (trimmed) {
             setLiveClue(trimmed)
             setHistory(prev => [trimmed, ...prev.slice(0, 2)])
+            setSelectedClue("")
             console.log(`Sent clue in ${language}:`, trimmed)
         }
     }
@@ -88,6 +89,7 @@ export default function ClueManager() {
                         onChange={(e) => setSelectedClue(e.target.value)}
                         placeholder="Edit or write a clue..."
                     />
+                    <Button className="mt-2 cursor-pointer" disabled={selectedClue.trim() === ""} onClick={() => setSelectedClue("")}>Clear preview</Button>
                 </div>
 
                 <div className="space-y-2">
@@ -122,11 +124,11 @@ export default function ClueManager() {
             </CardContent>
 
             <CardFooter className="flex gap-4">
-                <Button className=" cursor-pointer flex-1" onClick={handleSend} disabled={!selectedClue.trim()}>
-                    Send
+                <Button className="cursor-pointer flex-1" onClick={handleSend} disabled={selectedClue.trim() === ""}>
+                    Send message to screen
                 </Button>
                 <Button variant="outline" className=" cursor-pointer flex-1 bg-gray-300" onClick={handleClear} disabled={!liveClue}>
-                    Clear
+                    Clear live message
                 </Button>
             </CardFooter>
         </Card>
