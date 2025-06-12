@@ -122,10 +122,10 @@ export default function ClueManager() {
             </CardContent>
 
             <CardFooter className="flex gap-4">
-                <Button className="flex-1" onClick={handleSend} disabled={!selectedClue.trim()}>
+                <Button className=" cursor-pointer flex-1" onClick={handleSend} disabled={!selectedClue.trim()}>
                     Send
                 </Button>
-                <Button variant="outline" className="flex-1 bg-gray-300" onClick={handleClear} disabled={!liveClue}>
+                <Button variant="outline" className=" cursor-pointer flex-1 bg-gray-300" onClick={handleClear} disabled={!liveClue}>
                     Clear
                 </Button>
             </CardFooter>
