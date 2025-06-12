@@ -1,10 +1,21 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Play, Pause, RotateCcw } from "lucide-react"
+import { Play, Pause, RotateCcw, Ban } from "lucide-react"
 
 export default function CountdownTimer() {
     const [totalSeconds, setTotalSeconds] = useState(3600)
@@ -14,13 +25,11 @@ export default function CountdownTimer() {
 
     useEffect(() => {
         let interval: NodeJS.Timeout | null = null
-
         if (isRunning) {
             interval = setInterval(() => {
-                setTotalSeconds(seconds => seconds - 1) // Allow going negative
+                setTotalSeconds((seconds) => seconds - 1)
             }, 1000)
         }
-
         return () => {
             if (interval) clearInterval(interval)
         }
@@ -32,7 +41,6 @@ export default function CountdownTimer() {
         const hours = Math.floor(absSeconds / 3600)
         const minutes = Math.floor((absSeconds % 3600) / 60)
         const remainingSeconds = absSeconds % 60
-
         return `${sign}${hours.toString().padStart(2, '0')}:${minutes
             .toString()
             .padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
@@ -40,14 +48,13 @@ export default function CountdownTimer() {
 
     const handleStart = () => setIsRunning(true)
     const handlePause = () => setIsRunning(false)
-
     const handleReset = () => {
         setIsRunning(false)
         setTotalSeconds(initialTime)
     }
 
     const adjustTime = (minutes: number) => {
-        setTotalSeconds(prev => prev + minutes * 60) // allow negative time too
+        setTotalSeconds((prev) => prev + minutes * 60)
     }
 
     const handleCustomTime = () => {
@@ -58,15 +65,12 @@ export default function CountdownTimer() {
         }
     }
 
-    // Update colors: orange if 0 < time <= 5min, red if ≤ 0
-    const timeColorClass = totalSeconds <= 0
-        ? 'text-red-500'
-        : totalSeconds <= 300
-            ? 'text-orange-500'
-            : 'text-foreground'
-
-    // Disable Start if negative time? I guess no, user can start anytime.
-    // No "finished" state now.
+    const timeColorClass =
+        totalSeconds <= 0
+            ? "text-red-500"
+            : totalSeconds <= 300
+            ? "text-orange-500"
+            : "text-foreground"
 
     return (
         <Card className="h-full">
@@ -75,9 +79,7 @@ export default function CountdownTimer() {
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="text-center">
-                    <div
-                        className={`text-6xl font-mono font-bold ${timeColorClass}`}
-                    >
+                    <div className={`text-6xl font-mono font-bold ${timeColorClass}`}>
                         {formatTime(totalSeconds)}
                     </div>
                 </div>
@@ -92,20 +94,40 @@ export default function CountdownTimer() {
                             <Pause className="h-4 w-4" /> Pause
                         </Button>
                     )}
-                    <Button onClick={handleReset} variant="outline" className="cursor-pointer flex items-center gap-2">
-                        <RotateCcw className="h-4 w-4" /> Reset
-                    </Button>
+
+                    {/* AlertDialog for Reset */}
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="outline" className="cursor-pointer flex items-center gap-2">
+                                <RotateCcw className="h-4 w-4" /> Reset
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Reset the timer?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This will stop the timer and reset it to 01:00:00.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleReset}>
+                                    Yes, reset
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
-                    {[1, 3, 5].map(min => (
+                    {[1, 3, 5].map((min) => (
                         <Button key={`add-${min}`} onClick={() => adjustTime(min)} size="sm" variant="default" className="cursor-pointer">
-                            + {min} minute{min > 1 ? 's' : ''}
+                            + {min} minute{min > 1 ? "s" : ""}
                         </Button>
                     ))}
-                    {[1, 3, 5].map(min => (
+                    {[1, 3, 5].map((min) => (
                         <Button key={`remove-${min}`} onClick={() => adjustTime(-min)} size="sm" variant="destructive" className="cursor-pointer">
-                            - {min} minute{min > 1 ? 's' : ''}
+                            - {min} minute{min > 1 ? "s" : ""}
                         </Button>
                     ))}
                 </div>
@@ -115,16 +137,15 @@ export default function CountdownTimer() {
                         type="number"
                         placeholder="Add a custom amount of minutes"
                         value={customMinutes}
-                        onChange={e => setCustomMinutes(e.target.value)}
+                        onChange={(e) => setCustomMinutes(e.target.value)}
                     />
                     <Button
                         onClick={handleCustomTime}
-                        size="sm"
                         className="cursor-pointer"
                         disabled={customMinutes.trim() === "" || isNaN(Number(customMinutes))}
                     >
                         {customMinutes.trim() === "" || isNaN(Number(customMinutes))
-                            ? "Apply"
+                            ? <Ban />
                             : `${Number(customMinutes) >= 0 ? "Add" : "Remove"} ${Math.abs(Number(customMinutes))} minute${Math.abs(Number(customMinutes)) !== 1 ? "s" : ""}`}
                     </Button>
                 </div>

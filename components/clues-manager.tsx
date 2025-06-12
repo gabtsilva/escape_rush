@@ -52,7 +52,8 @@ export default function ClueManager() {
                         {LANGUAGES.map((lang) => (
                             <Button
                                 key={lang}
-                                variant={lang === language ? "default" : "outline"}
+                                className="cursor-pointer"
+                                variant={lang === language ? "default" : "ghost"}
                                 onClick={() => setLanguage(lang)}
                             >
                                 {lang.toUpperCase()}

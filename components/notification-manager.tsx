@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Lightbulb, LightbulbOff } from "lucide-react"
 
@@ -10,12 +10,6 @@ export default function NotificationManager() {
 
     return (
         <Card className="h-full flex flex-col">
-            <CardHeader>
-                <CardTitle>
-                    HELP REQUEST MANAGER
-                </CardTitle>
-            </CardHeader>
-
             <CardContent className="flex-1 flex flex-col gap-4">
                 <div className="flex-1">
                     {askedForClue ? (
@@ -32,11 +26,16 @@ export default function NotificationManager() {
                 </div>
 
                 {/* Developer Buttons */}
+                <div className="w-full">
+                    <Button className="cursor-pointer w-full" variant="default">
+                        Trigger Hacking video
+                    </Button>
+                </div>
                 <div className="flex justify-center gap-4">
-                    <Button variant="outline" onClick={() => setAskedForClue(true)}>
+                    <Button className="cursor-pointer" variant="outline" onClick={() => setAskedForClue(true)}>
                         Trigger Help Request (dev)
                     </Button>
-                    <Button variant="secondary" onClick={() => setAskedForClue(false)}>
+                    <Button className="cursor-pointer" variant="secondary" onClick={() => setAskedForClue(false)}>
                         Clear Help Request (dev)
                     </Button>
                 </div>
