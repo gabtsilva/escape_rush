@@ -44,7 +44,7 @@ export default function RootLayout({
               <main className="flex-1">{children}</main>
             </StateProvider>
             <footer className="mt-2 text-center bg-card text-sm text-muted-foreground py-3 border-t border-x rounded-t-xl">
-              Made with <Heart className="inline w-3 h-3 mx-1 text-red-700" fill="currentColor" /> in Brussels
+              Made with <Heart className="inline w-3 h-3 mx-1 text-red-700" fill="currentColor" /> by <Link className="underline" href="https://www.linkedin.com/in/gabriel-tsilva/" target="blank">Gabriel Torres Silva</Link>
             </footer>
           </div>
         </ThemeProvider>
